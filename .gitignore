@@ -1,2 +1,8 @@
 # IntelliJ IDEA
 .idea
+
+# nix flake update
+flake.lock
+
+# nix build
+result
