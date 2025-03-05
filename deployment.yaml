@@ -1,0 +1,43 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: derper
+  namespace: derper
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: derper
+
+  template:
+
+    metadata:
+      labels:
+        app: derper
+
+    spec:
+      containers:
+        - name: derper
+          image: harbor.xy-ai.com/library/derper:latest
+          ports:
+            - containerPort: 443
+
+          command: [ "derper" ]
+          args: [ "-certmode", "manual", "-hostname", "derper.xy-ai.com" ]
+
+          volumeMounts:
+            - mountPath: "/.cache/tailscale/derper-certs/derper.xy-ai.com.crt"
+              name: ingress-tls
+              subPath: tls.crt
+            - mountPath: "/.cache/tailscale/derper-certs/derper.xy-ai.com.key"
+              name: ingress-tls
+              subPath: tls.key
+
+      volumes:
+        - name: ingress-tls
+          secret:
+            secretName: ingress-tls
